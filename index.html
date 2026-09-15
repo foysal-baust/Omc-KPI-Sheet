@@ -750,6 +750,68 @@ let donutChartInstance = null;
 let pieChartInstance = null;
 let efficiencyChartInstance = null;
 
+// Toast Notification Helper
+function showToast(message, type = 'success') {
+  const container = document.getElementById('toastContainer');
+  if (!container) return;
+  
+  const toast = document.createElement('div');
+  const bgClass = type === 'error' ? 'bg-red-600' : (type === 'info' ? 'bg-slate-800' : 'bg-emerald-600');
+  toast.className = `${bgClass} text-white text-xs font-semibold px-4 py-2.5 rounded-lg shadow-lg pointer-events-auto flex items-center gap-2 transform transition-all duration-300 opacity-0 translate-y-[-10px]`;
+  toast.innerText = message;
+  
+  container.appendChild(toast);
+  
+  requestAnimationFrame(() => {
+    toast.classList.remove('opacity-0', 'translate-y-[-10px]');
+  });
+  
+  setTimeout(() => {
+    toast.classList.add('opacity-0', 'translate-y-[-10px]');
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// Confirmation Modal Helper for Data Deletion
+function showConfirm(title, message, onConfirm) {
+  const modal = document.getElementById('customModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalMessage = document.getElementById('modalMessage');
+  const cancelBtn = document.getElementById('modalCancelBtn');
+  const confirmBtn = document.getElementById('modalConfirmBtn');
+
+  if (!modal) {
+    if (window.confirm(`${title}\n${message}`)) {
+      onConfirm();
+    }
+    return;
+  }
+
+  if (modalTitle) modalTitle.innerText = title;
+  if (modalMessage) modalMessage.innerText = message;
+
+  modal.classList.remove('hidden');
+
+  const cleanup = () => {
+    cancelBtn.removeEventListener('click', handleCancel);
+    confirmBtn.removeEventListener('click', handleConfirm);
+  };
+
+  const handleCancel = () => {
+    modal.classList.add('hidden');
+    cleanup();
+  };
+
+  const handleConfirm = () => {
+    modal.classList.add('hidden');
+    cleanup();
+    if (typeof onConfirm === 'function') onConfirm();
+  };
+
+  cancelBtn.addEventListener('click', handleCancel);
+  confirmBtn.addEventListener('click', handleConfirm);
+}
+
 function getInputs(){
   return {
     lineNo: document.getElementById('lineNo').value.trim() || 'Line 1',
@@ -1293,6 +1355,8 @@ window.downloadSampleTemplate = downloadSampleTemplate;
 window.triggerExcelUpload = triggerExcelUpload;
 window.handleExcelImport = handleExcelImport;
 window.renderAllCharts = renderAllCharts;
+window.showToast = showToast;
+window.showConfirm = showConfirm;
 
 window.addEventListener('load', () => {
   const dateValInput = document.getElementById('dateVal');
