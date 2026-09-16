@@ -21,7 +21,6 @@
     --ink-soft: #475569;
     --line: #E2E8F0;
     
-    /* Request Specific Colors */
     --sky-blue: #0EA5E9;
     --sky-blue-light: #E0F2FE;
     --color-green: #10B981;
@@ -51,15 +50,6 @@
     font-family: 'IBM Plex Mono', monospace;
     font-weight: 600;
   }
-  .btn-amber {
-    background-color: #D97706;
-    color: #FFFFFF;
-  }
-  .btn-amber:hover {
-    background-color: #B45309;
-  }
-
-  /* Pulse animation for live sync */
   .pulse-green {
     box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
     animation: pulseGreen 1.5s infinite;
@@ -69,14 +59,10 @@
     70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
     100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
   }
-
-  /* Drag and drop overlay */
   .drag-over {
     border: 2px dashed var(--sky-blue) !important;
     background-color: #F0F9FF !important;
   }
-
-  /* Scrollbar styling */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: #f1f1f1; }
   ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
@@ -84,17 +70,15 @@
 </head>
 <body class="p-3 md:p-8 min-h-screen">
 
-<!-- Toast Notification Container -->
 <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-<!-- Firebase Security Rules Warning Banner -->
 <div id="firebaseRuleAlert" class="hidden max-w-7xl mx-auto mb-4 p-4 bg-amber-50 border-l-4 border-amber-500 rounded-r-xl shadow-sm text-amber-900 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
   <div>
     <strong class="font-bold text-sm flex items-center gap-1.5 text-amber-800">
       ⚠️ Firebase Security Rules Notice
     </strong>
     <p class="mt-1 text-amber-700">
-      Database updates from other devices are blocked because your Firebase Realtime Database security rules reject public access.
+      Database updates from other devices are blocked because your Firebase security rules reject public access.
     </p>
   </div>
   <div class="bg-amber-100 p-2.5 rounded text-[11px] font-mono text-amber-900 border border-amber-300">
@@ -103,7 +87,6 @@
   </div>
 </div>
 
-<!-- Modal Confirmation dialog -->
 <div id="customModal" class="fixed inset-0 bg-slate-900/50 z-50 hidden flex items-center justify-center p-4">
   <div class="bg-white rounded-xl max-w-sm w-full p-6 shadow-2xl space-y-4 text-center">
     <div id="modalIcon" class="w-12 h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mx-auto text-xl font-bold">⚠️</div>
@@ -118,15 +101,14 @@
 
 <div class="max-w-7xl mx-auto space-y-6">
 
-  <!-- Main Header -->
   <header class="panel p-5 md:p-6 border-l-4 border-sky-500">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-2">
-          <h1 class="text-xl md:text-2xl font-bold tracking-tight text-slate-900">OMC Floor — Production, Excel & Graph Tracker</h1>
-          <span class="bg-sky-100 text-sky-800 text-[10px] uppercase font-extrabold px-2.5 py-0.5 rounded-full tracking-wider">KPI GRAPH ANALYTICS ACTIVE</span>
+          <h1 class="text-xl md:text-2xl font-bold tracking-tight text-slate-900">OMC Floor — Target vs Actual Production Tracker</h1>
+          <span class="bg-sky-100 text-sky-800 text-[10px] uppercase font-extrabold px-2.5 py-0.5 rounded-full tracking-wider">TARGET VS ACTUAL ACTIVE</span>
         </div>
-        <p class="text-xs md:text-sm text-slate-500 mt-1">Real-time dynamic re-planning, live Excel database sync, and multi-chart visual bottleneck diagnostics.</p>
+        <p class="text-xs md:text-sm text-slate-500 mt-1">Real-time target vs actual production comparison, live Excel database sync, and multi-chart visual bottleneck diagnostics.</p>
       </div>
       <div class="flex items-center gap-3 flex-wrap">
         <span id="liveSyncBadge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 transition-all">
@@ -138,27 +120,32 @@
       </div>
     </div>
     
-    <!-- Meta Data Entry Bar -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-5 pt-5 border-t border-slate-200">
+    <div class="grid grid-cols-1 sm:grid-cols-5 gap-4 mt-5 pt-5 border-t border-slate-200">
       <div>
         <label class="block text-xs font-semibold text-slate-600 mb-1">Line No. / ID</label>
-        <input id="lineNo" type="text" placeholder="e.g. Line 1" value="" class="w-full border border-slate-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none" oninput="autoSaveDraft()">
+        <input id="lineNo" type="text" placeholder="e.g. Line 1" class="w-full border border-slate-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none" oninput="autoSaveDraft()">
       </div>
       <div>
         <label class="block text-xs font-semibold text-slate-600 mb-1">Style / Order No.</label>
-        <input id="styleNo" type="text" placeholder="e.g. STY-8821" value="" class="w-full border border-slate-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none" oninput="autoSaveDraft()">
+        <input id="styleNo" type="text" placeholder="e.g. STY-8821" class="w-full border border-slate-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none" oninput="autoSaveDraft()">
       </div>
       <div>
         <label class="block text-xs font-semibold text-slate-600 mb-1">Tracking Date</label>
         <input id="dateVal" type="date" class="w-full border border-slate-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none" onchange="autoSaveDraft()">
       </div>
+      <div>
+        <label class="block text-xs font-semibold text-indigo-700 mb-1">Hour Target (Pcs)</label>
+        <input id="entryHourTarget" type="number" min="0" value="0" placeholder="e.g. 75" class="w-full border border-indigo-300 rounded-md px-3 py-2 text-sm font-bold text-indigo-700 bg-indigo-50/50 focus:ring-2 focus:ring-indigo-500 focus:outline-none" oninput="autoSaveDraft()">
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-emerald-700 mb-1">Hour Actual (Pcs)</label>
+        <input id="entryHourActual" type="number" min="0" value="0" placeholder="e.g. 70" class="w-full border border-emerald-300 rounded-md px-3 py-2 text-sm font-bold text-emerald-700 bg-emerald-50/50 focus:ring-2 focus:ring-emerald-500 focus:outline-none" oninput="autoSaveDraft()">
+      </div>
     </div>
   </header>
 
-  <!-- Target Setup & Dynamic Next Hour Calculation -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-    <!-- Section 1: Setup & Target Calculation -->
     <div class="panel p-6 flex flex-col justify-between">
       <div>
         <h2 class="text-base font-bold text-slate-800 border-b pb-3 mb-4 flex items-center justify-between">
@@ -212,7 +199,6 @@
       </div>
     </div>
 
-    <!-- Section 2: Dynamic Next Hour Target & Actual Performance -->
     <div class="panel p-6 bg-slate-50/50 flex flex-col justify-between">
       <div>
         <h2 class="text-base font-bold text-slate-800 border-b pb-3 mb-4 flex items-center justify-between">
@@ -222,33 +208,34 @@
 
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
           <div>
-            <label class="block text-xs text-slate-500 mb-1">Day Target</label>
-            <input id="nhtDayTarget" type="text" readonly value="0" class="w-full border rounded-md px-3 py-1.5 text-sm readonly-input">
+            <label class="block text-xs text-slate-500 mb-1 font-semibold text-sky-700">Day Target</label>
+            <input id="nextDayTarget" type="number" min="0" value="0" class="w-full border border-sky-300 rounded-md px-3 py-1.5 text-sm font-bold text-sky-700 bg-white">
           </div>
           <div>
-            <label class="block text-xs text-slate-500 mb-1">Hours Elapsed</label>
-            <input id="nhtHoursElapsed" type="number" min="0" max="24" step="0.5" value="0" class="w-full border border-slate-300 rounded-md px-3 py-1.5 text-sm">
+            <label class="block text-xs text-slate-500 mb-1 font-semibold text-slate-700">Hours Elapsed</label>
+            <input id="hoursElapsed" type="number" min="0" max="24" value="0" class="w-full border border-slate-300 rounded-md px-3 py-1.5 text-sm font-bold text-slate-700 bg-white" placeholder="e.g. 3">
           </div>
           <div>
-            <label class="block text-xs text-slate-500 mb-1 font-semibold text-sky-700">Cumulative Output</label>
-            <input id="nhtCumulative" type="number" min="0" value="0" class="w-full border border-sky-400 rounded-md px-3 py-1.5 text-sm font-semibold focus:ring-sky-500">
+            <label class="block text-xs text-slate-500 mb-1 font-semibold text-emerald-700">Cumulative Output</label>
+            <input id="cumulativeOutput" type="number" min="0" value="0" class="w-full border border-emerald-400 rounded-md px-3 py-1.5 text-sm font-bold text-emerald-700 bg-white" placeholder="Total pcs done">
           </div>
+
           <div>
             <label class="block text-xs text-slate-500 mb-1">Remaining Hours</label>
-            <input id="nhtRemaining" type="text" readonly value="8.0" class="w-full border rounded-md px-3 py-1.5 text-sm readonly-input">
+            <input id="remainingHours" type="text" readonly value="8.0" class="w-full border rounded-md px-3 py-1.5 text-sm font-bold text-slate-700 readonly-input">
           </div>
           <div>
-            <label class="block text-xs text-slate-500 mb-1 font-semibold text-emerald-700">Next Hour Target</label>
-            <input id="nhtResult" type="text" readonly value="0" class="w-full border rounded-md px-3 py-1.5 text-sm font-bold text-emerald-700 bg-emerald-50 border-emerald-200">
+            <label class="block text-xs text-slate-500 mb-1 font-semibold text-sky-700">Next Hour Target</label>
+            <input id="nextHourTargetVal" type="text" readonly value="0" class="w-full border rounded-md px-3 py-1.5 text-sm font-bold text-sky-800 bg-sky-50 border-sky-200">
           </div>
           <div>
-            <label class="block text-xs text-slate-500 mb-1 font-semibold text-purple-700">Actual Eff %</label>
-            <input id="nhtEfficiency" type="text" readonly value="0.0%" class="w-full border rounded-md px-3 py-1.5 text-sm font-bold text-purple-700 bg-purple-50 border-purple-200">
+            <label class="block text-xs text-slate-500 mb-1">Actual Eff %</label>
+            <input id="nextActualEff" type="text" readonly value="0.0%" class="w-full border rounded-md px-3 py-1.5 text-sm font-bold text-purple-700 bg-purple-50 border-purple-200">
           </div>
         </div>
       </div>
 
-      <div class="mt-5 flex flex-col sm:flex-row items-center gap-3">
+      <div class="mt-5 flex items-center gap-3">
         <button onclick="saveCurrentLineData()" class="w-full bg-sky-600 hover:bg-sky-700 text-white py-2.5 px-4 rounded-lg font-semibold text-sm shadow-sm flex items-center justify-center gap-2 transition hover:shadow active:scale-98">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
           Save Line Entry to Master Log Sheet
@@ -258,41 +245,31 @@
 
   </div>
 
-  <!-- Superuser Lock Overlay Card -->
   <div id="superuserLockCard" class="panel p-6 text-center bg-slate-900 text-white shadow-xl">
     <div class="max-w-md mx-auto space-y-3">
-      <div class="w-10 h-10 rounded-full bg-sky-500/20 text-sky-400 flex items-center justify-center mx-auto text-xl font-bold">
-        🔒
-      </div>
+      <div class="w-10 h-10 rounded-full bg-sky-500/20 text-sky-400 flex items-center justify-center mx-auto text-xl font-bold">🔒</div>
       <h2 class="text-lg font-bold tracking-wide">Superuser Analytics & Master Sheet Locked</h2>
-      <p class="text-xs text-slate-400">
-        Access to the Master Data Sheet, Live Drag-and-Drop Import, and Multi-Chart Bottleneck Graphs is superuser protected.
-      </p>
+      <p class="text-xs text-slate-400">Access to the Master Data Sheet, Live Excel Import/Export, and Target vs Actual Bottleneck Graphs is superuser protected.</p>
       <form id="superuserForm" onsubmit="event.preventDefault(); window.unlockSuperuser();" class="flex items-center justify-center gap-2 max-w-xs mx-auto">
         <input type="password" id="superuserPassInput" placeholder="Enter password" autocomplete="current-password" class="w-full px-3 py-1.5 text-sm text-slate-900 rounded-lg border border-slate-700 focus:outline-none focus:ring-2 focus:ring-sky-500" oninput="document.getElementById('authErrMsg').classList.add('hidden')">
-        <button type="submit" id="unlockSubmitBtn" class="bg-sky-500 hover:bg-sky-600 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap">
-          Unlock
-        </button>
+        <button type="submit" id="unlockSubmitBtn" class="bg-sky-500 hover:bg-sky-600 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap">Unlock</button>
       </form>
       <div id="authErrMsg" class="text-xs text-red-400 hidden font-semibold">Incorrect Password. Please try again.</div>
     </div>
   </div>
 
-  <!-- Superuser Protected Content Wrapper -->
   <div id="superuserContent" class="hidden space-y-6">
 
-    <!-- Section 3: Data Sheet Log & Management -->
     <div id="excelPanel" class="panel p-6 transition-all duration-300">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5 pb-4 border-b border-slate-200">
         <div>
           <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-            <span>📊 Master Data Sheet</span>
+            <span>📊 Master Data Sheet (Target vs Actual Production)</span>
             <span id="recordBadge" class="text-xs bg-slate-200 text-slate-700 px-2.5 py-0.5 rounded-full font-medium">0 entries</span>
           </h2>
-          <p class="text-xs text-slate-500 mt-0.5">Edit table rows directly inline. Drop any Excel (.xlsx/.csv) file anywhere on this box to import live.</p>
+          <p class="text-xs text-slate-500 mt-0.5">Direct comparison log including Hourly Target vs Hourly Actual. Drop any Excel (.xlsx/.csv) file to import live.</p>
         </div>
 
-        <!-- Action Buttons for Master Sheet -->
         <div class="flex flex-wrap items-center gap-2">
           <button onclick="downloadExcelReport()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3.5 py-2 rounded-lg flex items-center gap-1.5 transition shadow-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
@@ -305,22 +282,15 @@
           </button>
           <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelImport(event)">
 
-          <button onclick="downloadSampleTemplate()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 text-xs font-semibold px-3 py-2 rounded-lg flex items-center gap-1 transition">
-            Template
-          </button>
-
-          <button onclick="clearAllRecordsConfirm()" class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-semibold px-3 py-2 rounded-lg transition">
-            Clear Data
-          </button>
+          <button onclick="downloadSampleTemplate()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 text-xs font-semibold px-3 py-2 rounded-lg flex items-center gap-1 transition">Template</button>
+          <button onclick="clearAllRecordsConfirm()" class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-semibold px-3 py-2 rounded-lg transition">Clear Data</button>
         </div>
       </div>
 
-      <!-- Live Drag & Drop Zone Indicator -->
       <div id="dropZoneHint" class="hidden mb-3 p-3 bg-sky-50 border border-sky-200 rounded-lg text-center text-xs text-sky-700 font-semibold">
         📂 Drop your Excel (.xlsx / .csv) file here to load live!
       </div>
 
-      <!-- Table -->
       <div class="overflow-x-auto rounded-lg border border-slate-200 max-h-80">
         <table class="w-full text-left text-xs">
           <thead class="bg-slate-100 text-slate-700 font-semibold sticky top-0 border-b border-slate-200 z-10">
@@ -328,33 +298,27 @@
               <th class="p-3">Date</th>
               <th class="p-3">Line No.</th>
               <th class="p-3">Style No.</th>
-              <th class="p-3">MP</th>
+              <th class="p-3">Manpower</th>
               <th class="p-3">SMV</th>
-              <th class="p-3">Target</th>
-              <th class="p-3">Actual</th>
-              <th class="p-3">Eff %</th>
-              <th class="p-3">Next Hr Target</th>
+              <th class="p-3 text-indigo-700">Hour Target</th>
+              <th class="p-3 text-indigo-700">Hour Actual</th>
+              <th class="p-3">Variance</th>
+              <th class="p-3">Efficiency %</th>
               <th class="p-3 text-center">Actions</th>
             </tr>
           </thead>
-          <tbody id="excelTableBody" class="divide-y divide-slate-200 text-slate-700 bg-white">
-            <!-- Dynamic Rows inserted via JS -->
-          </tbody>
+          <tbody id="excelTableBody" class="divide-y divide-slate-200 text-slate-700 bg-white"></tbody>
         </table>
-      </div>
-      <div class="mt-2 text-right">
-        <span class="text-[11px] text-slate-400">💡 Hint: Edit inputs directly to auto-calculate efficiency & update graphs live.</span>
       </div>
     </div>
 
-    <!-- Section 4: Line Performance Visual Graph & Bottleneck Tracker -->
     <div class="panel p-6">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-3 border-b border-slate-200">
         <div>
           <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-            <span>📈 KPI Graph Analytics & Bottleneck Diagnostic Dashboard</span>
+            <span>📈 Hour Target vs Actual Analytics & Bottleneck Dashboard</span>
           </h2>
-          <p class="text-xs text-slate-500 mt-0.5">Sky-Blue (Target), Green (Met Target), and Red (Bottleneck) visual charts for instant floor decision making.</p>
+          <p class="text-xs text-slate-500 mt-0.5">Compare Hour Target vs Hour Actual production across lines.</p>
         </div>
         <div class="flex flex-wrap items-center gap-3">
           <div>
@@ -366,17 +330,16 @@
         </div>
       </div>
 
-      <!-- Executive Summary Cards with Sky-Blue, Green, Red KPI Indicators -->
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
         <div class="bg-sky-50/70 border border-sky-200 rounded-lg p-3 text-center">
-          <span class="text-[11px] font-semibold text-sky-800 block">Total Target</span>
+          <span class="text-[11px] font-semibold text-sky-800 block">Total Hour Target</span>
           <span id="metricTotalTarget" class="text-lg font-bold text-sky-600">0</span>
-          <span class="text-[10px] text-sky-700 block mt-0.5">Scheduled Output</span>
+          <span class="text-[10px] text-sky-700 block mt-0.5">Sum of Hour Targets</span>
         </div>
         <div class="bg-emerald-50/70 border border-emerald-200 rounded-lg p-3 text-center">
-          <span class="text-[11px] font-semibold text-emerald-800 block">Total Output</span>
+          <span class="text-[11px] font-semibold text-emerald-800 block">Total Output (Actual)</span>
           <span id="metricTotalOutput" class="text-lg font-bold text-emerald-600">0</span>
-          <span class="text-[10px] text-emerald-700 block mt-0.5">Produced Pieces</span>
+          <span class="text-[10px] text-emerald-700 block mt-0.5">Sum of Hour Actuals</span>
         </div>
         <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 text-center">
           <span class="text-[11px] font-semibold text-slate-600 block">Achievement Rate</span>
@@ -388,7 +351,7 @@
         <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 text-center">
           <span class="text-[11px] font-semibold text-slate-600 block">Production Gap</span>
           <span id="metricVariance" class="text-lg font-bold text-slate-700">0</span>
-          <span id="metricVarianceLabel" class="text-[10px] text-slate-400 block mt-0.5">Variance vs Target</span>
+          <span id="metricVarianceLabel" class="text-[10px] text-slate-400 block mt-0.5">Variance vs Hour Target</span>
         </div>
         <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 text-center">
           <span class="text-[11px] font-semibold text-slate-600 block">Average Efficiency</span>
@@ -396,51 +359,47 @@
           <span class="text-[10px] text-slate-400 block mt-0.5">Floor Line Average</span>
         </div>
         <div class="bg-red-50/70 border border-red-200 rounded-lg p-3 text-center">
-          <span class="text-[11px] font-semibold text-red-800 block">Critical Bottlenecks</span>
+          <span class="text-[11px] font-semibold text-red-800 block">At-Risk Lines</span>
           <span id="metricAtRiskCount" class="text-lg font-bold text-red-600">0 Lines</span>
-          <span class="text-[10px] text-red-700 block mt-0.5 font-medium">&lt; 85% Target Achieved</span>
+          <span class="text-[10px] text-red-700 block mt-0.5 font-medium">&lt; 85% Efficiency</span>
         </div>
       </div>
 
-      <!-- Problem Identification & Line Health Diagnostic Table -->
+      <!-- Problem / Bottleneck Matrix Table -->
       <div class="mb-6 bg-slate-50 border border-slate-200 rounded-lg p-4">
         <div class="flex items-center justify-between mb-3">
           <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-            <span>🚨 Line Health & Bottleneck Matrix</span>
+            <span>🚨 Line Health & Bottleneck Matrix (Hour Target vs Actual)</span>
           </h3>
-          <span class="text-[11px] text-slate-500">Auto-evaluated against line targets & floor efficiency baseline</span>
+          <span class="text-[11px] text-slate-500">Auto-evaluated against hour targets</span>
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs bg-white rounded-md border border-slate-200 overflow-hidden">
             <thead class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
               <tr>
                 <th class="p-2.5">Line & Style</th>
-                <th class="p-2.5">Target vs Actual</th>
+                <th class="p-2.5">Hour Target vs Actual</th>
                 <th class="p-2.5">Variance (Pcs)</th>
                 <th class="p-2.5">Achieved %</th>
                 <th class="p-2.5">Status Point</th>
-                <th class="p-2.5">Supervisor Recommended Action</th>
+                <th class="p-2.5">Supervisor Action</th>
               </tr>
             </thead>
-            <tbody id="problemMatrixBody" class="divide-y divide-slate-100">
-              <!-- Dynamically filled by JS -->
-            </tbody>
+            <tbody id="problemMatrixBody" class="divide-y divide-slate-100"></tbody>
           </table>
         </div>
       </div>
 
-      <!-- Visual Graph Section Grid: Bar Chart, Donut Chart, Pie Chart & Efficiency Chart -->
+      <!-- Charts Grid -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-        <!-- 1. BAR CHART: Target vs Actual Output Comparison -->
         <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
           <div class="flex items-center justify-between mb-3">
             <div>
               <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
                 <span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span>
-                <span>Bar Chart: Target vs Actual Output</span>
+                <span>Bar Chart: Hour Target vs Actual Output by Line</span>
               </h3>
-              <p class="text-[11px] text-slate-500">Sky-Blue (Target) vs Green/Red (Actual Achieved / Bottleneck)</p>
+              <p class="text-[11px] text-slate-500">Comparing hour target vs actual production per line</p>
             </div>
             <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-mono">BAR CHART</span>
           </div>
@@ -449,13 +408,12 @@
           </div>
         </div>
 
-        <!-- 2. DONUT CHART: Line Status & Bottleneck Distribution -->
         <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
           <div class="flex items-center justify-between mb-3">
             <div>
               <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                <span>Donut Chart: Line KPI & Bottleneck Distribution</span>
+                <span>Donut Chart: Line KPI Status Distribution</span>
               </h3>
               <p class="text-[11px] text-slate-500">Target Met (Green) | Minor Risk (Sky-Blue) | Bottleneck (Red)</p>
             </div>
@@ -466,15 +424,14 @@
           </div>
         </div>
 
-        <!-- 3. PIE CHART: Production Output Contribution by Line -->
         <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
           <div class="flex items-center justify-between mb-3">
             <div>
               <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
                 <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
-                <span>Pie Chart: Production Contribution by Line</span>
+                <span>Pie Chart: Production Share by Line</span>
               </h3>
-              <p class="text-[11px] text-slate-500">Percentage share of total floor pieces produced per line</p>
+              <p class="text-[11px] text-slate-500">Percentage share of total actual output produced per line</p>
             </div>
             <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-mono">PIE CHART</span>
           </div>
@@ -483,7 +440,6 @@
           </div>
         </div>
 
-        <!-- 4. BAR/LINE CHART: Efficiency % Comparison -->
         <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
           <div class="flex items-center justify-between mb-3">
             <div>
@@ -499,13 +455,9 @@
             <canvas id="efficiencyChartCanvas"></canvas>
           </div>
         </div>
-
       </div>
-
     </div>
-
   </div>
-
 </div>
 
 <script type="module">
@@ -513,7 +465,10 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
 import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
-// Attach core unlock handler immediately to window so inline onclick and forms work instantly
+function autoSaveDraft() {
+  calculateTargetValues();
+}
+
 window.unlockSuperuser = function() {
   const inputEl = document.getElementById('superuserPassInput');
   const inputPass = inputEl ? inputEl.value.trim() : '';
@@ -537,64 +492,54 @@ window.toggleSuperuserLock = function() {
 };
 
 let isSuperuserUnlocked = false;
-let lineRecords = JSON.parse(localStorage.getItem('omc_excel_records')) || [];
+let lineRecords = JSON.parse(localStorage.getItem('omc_excel_records_target_vs_actual_v2')) || [];
 
-// Google Firebase Realtime Database Configuration & Direct REST Fallback
+let barChartInstance = null;
+let donutChartInstance = null;
+let pieChartInstance = null;
+let efficiencyChartInstance = null;
+
 const RTDB_URL = "https://omc-kpi-sheet-default-rtdb.firebaseio.com/";
-const REST_ENDPOINT = "https://omc-kpi-sheet-default-rtdb.firebaseio.com/omc_production_records.json";
+const REST_ENDPOINT = "https://omc-kpi-sheet-default-rtdb.firebaseio.com/omc_production_records_target_vs_actual_v2.json";
 
-let firebaseConfig = {
-  databaseURL: RTDB_URL
-};
-
+let firebaseConfig = { databaseURL: RTDB_URL };
 if (typeof __firebase_config !== 'undefined' && __firebase_config) {
   try {
     const parsed = JSON.parse(__firebase_config);
     firebaseConfig = { ...parsed, databaseURL: RTDB_URL };
-  } catch(e) {
-    console.warn("Using default RTDB configuration");
-  }
+  } catch(e) {}
 }
 
 let db = null;
 let recordsRef = null;
-let isUpdatingFromRemote = false;
 
 try {
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  
-  // Directly bind getDatabase to explicit RTDB endpoint
   db = getDatabase(app, RTDB_URL);
-  recordsRef = ref(db, 'omc_production_records');
+  recordsRef = ref(db, 'omc_production_records_target_vs_actual_v2');
 
-  // Authenticate user if token/key exists
   if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
     signInWithCustomToken(auth, __initial_auth_token).catch(() => signInAnonymously(auth).catch(() => {}));
   } else {
     signInAnonymously(auth).catch(() => {});
   }
 
-  // Realtime Database Auto-Sync Listener (WebSockets)
   onValue(recordsRef, (snapshot) => {
     const data = snapshot.val();
     processIncomingData(data);
     hideRuleAlert();
     updateSyncStatusBadge(true);
   }, (error) => {
-    console.warn("Firebase Realtime DB SDK Sync Notice:", error);
     if (error && error.message && error.message.includes("PERMISSION_DENIED")) {
       showRuleAlert();
     }
-    // Fall back to REST polling if WebSocket fails or permission issue occurs
     fetchRESTData();
   });
 } catch(err) {
-  console.warn("Firebase SDK initialization fallback to REST API:", err);
   fetchRESTData();
 }
 
-// Process data received from either WebSocket SDK or REST API
 function processIncomingData(data) {
   let fetchedRecords = [];
   if (data && Array.isArray(data)) {
@@ -607,15 +552,12 @@ function processIncomingData(data) {
   const fetchedStr = JSON.stringify(fetchedRecords);
   
   if (currentStr !== fetchedStr) {
-    isUpdatingFromRemote = true;
     lineRecords = fetchedRecords;
-    localStorage.setItem('omc_excel_records', fetchedStr);
+    localStorage.setItem('omc_excel_records_target_vs_actual_v2', fetchedStr);
     renderTableAndUI();
-    isUpdatingFromRemote = false;
   }
 }
 
-// REST API Polling Fallback (Ensures cross-device sync even on file:// protocol or blocked WebSockets)
 async function fetchRESTData() {
   try {
     const response = await fetch(REST_ENDPOINT);
@@ -631,21 +573,17 @@ async function fetchRESTData() {
       updateSyncStatusBadge(true);
     }
   } catch (err) {
-    console.warn("REST API Fetch Error:", err);
     updateSyncStatusBadge(false);
   }
 }
 
-// Auto-poll REST API every 4 seconds for maximum cross-device reliability
 setInterval(fetchRESTData, 4000);
 
-// Push local changes to Firebase Realtime Database (SDK set() + REST PUT backup)
 async function syncToFirebase() {
-  localStorage.setItem('omc_excel_records', JSON.stringify(lineRecords));
+  localStorage.setItem('omc_excel_records_target_vs_actual_v2', JSON.stringify(lineRecords));
   renderTableAndUI();
 
   let sdkSuccess = false;
-  
   if (recordsRef) {
     try {
       await set(recordsRef, lineRecords);
@@ -653,33 +591,25 @@ async function syncToFirebase() {
       updateSyncStatusBadge(true);
       hideRuleAlert();
     } catch(err) {
-      console.warn("SDK set failed, attempting REST PUT backup:", err);
       if (err && err.message && err.message.includes("PERMISSION_DENIED")) {
         showRuleAlert();
       }
     }
   }
 
-  // Dual push via REST PUT to guarantee write across all network types
   try {
     const res = await fetch(REST_ENDPOINT, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(lineRecords)
     });
-    
-    if (res.status === 401 || res.status === 403) {
-      showRuleAlert();
-      updateSyncStatusBadge(false, "Permission Denied");
-      return;
-    }
     if (res.ok) {
       updateSyncStatusBadge(true);
       hideRuleAlert();
     }
   } catch(err) {
     if (!sdkSuccess) {
-      showToast("Firebase sync failed. Check connection or Rules.", "error");
+      showToast("Firebase sync failed.", "error");
       updateSyncStatusBadge(false);
     }
   }
@@ -733,46 +663,21 @@ function lockSuperuser() {
   statusBtn.innerHTML = '🔒 Superuser Locked';
 }
 
-function toggleSuperuserLock() {
-  if (isSuperuserUnlocked) {
-    lockSuperuser();
-  } else {
-    const card = document.getElementById('superuserLockCard');
-    if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    const input = document.getElementById('superuserPassInput');
-    if (input) input.focus();
-  }
-}
-
-// Chart Instances
-let barChartInstance = null;
-let donutChartInstance = null;
-let pieChartInstance = null;
-let efficiencyChartInstance = null;
-
-// Toast Notification Helper
 function showToast(message, type = 'success') {
   const container = document.getElementById('toastContainer');
   if (!container) return;
-  
   const toast = document.createElement('div');
   const bgClass = type === 'error' ? 'bg-red-600' : (type === 'info' ? 'bg-slate-800' : 'bg-emerald-600');
   toast.className = `${bgClass} text-white text-xs font-semibold px-4 py-2.5 rounded-lg shadow-lg pointer-events-auto flex items-center gap-2 transform transition-all duration-300 opacity-0 translate-y-[-10px]`;
   toast.innerText = message;
-  
   container.appendChild(toast);
-  
-  requestAnimationFrame(() => {
-    toast.classList.remove('opacity-0', 'translate-y-[-10px]');
-  });
-  
+  requestAnimationFrame(() => toast.classList.remove('opacity-0', 'translate-y-[-10px]'));
   setTimeout(() => {
     toast.classList.add('opacity-0', 'translate-y-[-10px]');
     setTimeout(() => toast.remove(), 300);
   }, 3000);
 }
 
-// Confirmation Modal Helper for Data Deletion
 function showConfirm(title, message, onConfirm) {
   const modal = document.getElementById('customModal');
   const modalTitle = document.getElementById('modalTitle');
@@ -781,183 +686,149 @@ function showConfirm(title, message, onConfirm) {
   const confirmBtn = document.getElementById('modalConfirmBtn');
 
   if (!modal) {
-    if (window.confirm(`${title}\n${message}`)) {
-      onConfirm();
-    }
+    if (window.confirm(`${title}\n${message}`)) { onConfirm(); }
     return;
   }
 
   if (modalTitle) modalTitle.innerText = title;
   if (modalMessage) modalMessage.innerText = message;
-
   modal.classList.remove('hidden');
 
   const cleanup = () => {
     cancelBtn.removeEventListener('click', handleCancel);
     confirmBtn.removeEventListener('click', handleConfirm);
   };
-
-  const handleCancel = () => {
-    modal.classList.add('hidden');
-    cleanup();
-  };
-
-  const handleConfirm = () => {
-    modal.classList.add('hidden');
-    cleanup();
-    if (typeof onConfirm === 'function') onConfirm();
-  };
+  const handleCancel = () => { modal.classList.add('hidden'); cleanup(); };
+  const handleConfirm = () => { modal.classList.add('hidden'); cleanup(); if (typeof onConfirm === 'function') onConfirm(); };
 
   cancelBtn.addEventListener('click', handleCancel);
   confirmBtn.addEventListener('click', handleConfirm);
 }
 
-function getInputs(){
-  return {
-    lineNo: document.getElementById('lineNo').value.trim() || 'Line 1',
-    styleNo: document.getElementById('styleNo').value.trim() || 'N/A',
-    dateVal: document.getElementById('dateVal').value || new Date().toISOString().split('T')[0],
-    manpower: Math.max(0, parseFloat(document.getElementById('manpower').value) || 0),
-    smv: Math.max(0, parseFloat(document.getElementById('smv').value) || 0),
-    minsPerHour: Math.max(1, parseFloat(document.getElementById('minsPerHour').value) || 60),
-    totalHours: Math.max(1, parseInt(document.getElementById('totalHours').value) || 8),
-    hourlyTarget: parseFloat(document.getElementById('hourlyTarget').value) || 0,
-    expectedEff: parseFloat(document.getElementById('expectedEff').value) || 0
-  };
-}
+function calculateTargetValues() {
+  const manpower = Math.max(0, parseFloat(document.getElementById('manpower').value) || 0);
+  const smv = Math.max(0, parseFloat(document.getElementById('smv').value) || 0);
+  const minsPerHour = Math.max(1, parseFloat(document.getElementById('minsPerHour').value) || 60);
+  const totalHours = Math.max(1, parseFloat(document.getElementById('totalHours').value) || 8);
+  const expectedEff = parseFloat(document.getElementById('expectedEff').value) || 0;
 
-function getCapacity(){
-  const {manpower, smv, minsPerHour} = getInputs();
-  return (manpower > 0 && smv > 0) ? (manpower * minsPerHour / smv) : 0;
-}
-
-function getMode(){
-  return document.getElementById('modeFromTarget').checked ? 'fromTarget' : 'fromEff';
-}
-
-// Bind live listeners for immediate recalculation
-['manpower','smv','minsPerHour','expectedEff','hourlyTarget','totalHours'].forEach(id => {
-  const el = document.getElementById(id);
-  if(el) el.addEventListener('input', syncTargetAndEfficiency);
-});
-document.getElementById('modeFromEff').addEventListener('change', syncTargetAndEfficiency);
-document.getElementById('modeFromTarget').addEventListener('change', syncTargetAndEfficiency);
-
-function syncTargetAndEfficiency(){
-  const mode = getMode();
-  const capacity = getCapacity();
-  const hourlyTargetEl = document.getElementById('hourlyTarget');
-  const expectedEffEl = document.getElementById('expectedEff');
-
-  if(mode === 'fromEff'){
-    hourlyTargetEl.readOnly = true;
-    expectedEffEl.readOnly = false;
-    const {expectedEff} = getInputs();
-    if(capacity > 0){
-      hourlyTargetEl.value = (capacity * expectedEff / 100).toFixed(0);
-    }
-  } else {
-    hourlyTargetEl.readOnly = false;
-    expectedEffEl.readOnly = true;
-    const {manpower, smv, minsPerHour, hourlyTarget} = getInputs();
-    if(manpower > 0 && smv > 0){
-      const implied = (hourlyTarget * smv) / (manpower * minsPerHour) * 100;
-      expectedEffEl.value = implied.toFixed(1);
-    }
-  }
-  updateDayTarget();
-}
-
-function updateDayTarget(){
-  const {hourlyTarget, totalHours} = getInputs();
-  document.getElementById('dayTarget').value = (hourlyTarget * totalHours).toFixed(0);
-  syncNHTCalc();
-}
-
-function syncNHTCalc(){
-  const {manpower, smv, minsPerHour, hourlyTarget, totalHours} = getInputs();
+  const capacityPerHr = (manpower > 0 && smv > 0) ? (manpower * minsPerHour / smv) : 0;
+  const hourlyTarget = capacityPerHr > 0 ? Math.round(capacityPerHr * expectedEff / 100) : 0;
   const dayTarget = hourlyTarget * totalHours;
-  document.getElementById('nhtDayTarget').value = dayTarget.toFixed(0);
 
-  const hoursElapsed = Math.max(0, parseFloat(document.getElementById('nhtHoursElapsed').value) || 0);
-  const cumulative = parseFloat(document.getElementById('nhtCumulative').value) || 0;
-  const remaining = Math.max(0, totalHours - hoursElapsed);
-  document.getElementById('nhtRemaining').value = remaining.toFixed(1);
+  document.getElementById('hourlyTarget').value = hourlyTarget;
+  document.getElementById('dayTarget').value = dayTarget;
 
-  const resultEl = document.getElementById('nhtResult');
-  if(hoursElapsed >= totalHours){
-    resultEl.value = 'Day Complete';
-  } else if (remaining <= 0) {
-    resultEl.value = 'Time Up';
-  } else {
-    const nextTarget = (dayTarget - cumulative) / remaining;
-    resultEl.value = nextTarget <= 0 ? 'Target Met' : Math.ceil(nextTarget);
+  if (document.getElementById('modeFromEff').checked) {
+    document.getElementById('nextDayTarget').value = dayTarget;
   }
-
-  const effEl = document.getElementById('nhtEfficiency');
-  if(manpower > 0 && smv > 0 && hoursElapsed > 0){
-    const eff = (cumulative * smv) / (manpower * minsPerHour * hoursElapsed) * 100;
-    effEl.value = eff.toFixed(1) + '%';
-  } else {
-    effEl.value = '0.0%';
-  }
+  
+  calculateNextHourComparison();
 }
 
-document.getElementById('nhtHoursElapsed').addEventListener('input', syncNHTCalc);
-document.getElementById('nhtCumulative').addEventListener('input', syncNHTCalc);
+function calculateNextHourComparison() {
+  const dayTarget = parseFloat(document.getElementById('nextDayTarget').value) || 0;
+  const hoursElapsed = Math.max(0, parseFloat(document.getElementById('hoursElapsed').value) || 0);
+  const cumulativeOutput = parseFloat(document.getElementById('cumulativeOutput').value) || 0;
+  const totalHours = Math.max(1, parseFloat(document.getElementById('totalHours').value) || 8);
+  
+  const remainingHours = Math.max(0, totalHours - hoursElapsed);
+  document.getElementById('remainingHours').value = remainingHours.toFixed(1);
 
-function autoSaveDraft() {
-  const badge = document.getElementById('liveSyncBadge');
-  badge.classList.add('pulse-green');
-  setTimeout(() => badge.classList.remove('pulse-green'), 800);
+  const expectedCumulativeToDate = (dayTarget / totalHours) * hoursElapsed;
+  const deficitOrSurplus = cumulativeOutput - expectedCumulativeToDate;
+
+  let nextHourTarget = 0;
+  if (remainingHours > 0) {
+    const baseHourly = dayTarget / totalHours;
+    // Distribute deficit/surplus evenly across remaining hours
+    nextHourTarget = Math.round(baseHourly - (deficitOrSurplus / remainingHours));
+  } else {
+    nextHourTarget = 0;
+  }
+
+  const nextHourEl = document.getElementById('nextHourTargetVal');
+  nextHourEl.value = nextHourTarget > 0 ? `${nextHourTarget} Pcs` : 'Target Met';
+
+  const actualEff = expectedCumulativeToDate > 0 ? (cumulativeOutput / expectedCumulativeToDate) * 100 : (dayTarget > 0 ? (cumulativeOutput / (dayTarget / totalHours * Math.max(1, hoursElapsed))) * 100 : 0);
+  document.getElementById('nextActualEff').value = (isFinite(actualEff) ? actualEff : 0).toFixed(1) + '%';
 }
+
+['manpower','smv','minsPerHour','totalHours','expectedEff'].forEach(id => {
+  const el = document.getElementById(id);
+  if(el) el.addEventListener('input', calculateTargetValues);
+});
+
+['nextDayTarget','hoursElapsed','cumulativeOutput','totalHours'].forEach(id => {
+  const el = document.getElementById(id);
+  if(el) el.addEventListener('input', calculateNextHourComparison);
+});
+
+document.getElementById('modeFromTarget').addEventListener('change', () => {
+  document.getElementById('nextDayTarget').removeAttribute('readonly');
+});
+
+document.getElementById('modeFromEff').addEventListener('change', () => {
+  document.getElementById('nextDayTarget').setAttribute('readonly', true);
+  calculateTargetValues();
+});
 
 function saveCurrentLineData(){
-  const inputs = getInputs();
-  const dayTarget = parseFloat(document.getElementById('dayTarget').value) || 0;
-  const actual = parseFloat(document.getElementById('nhtCumulative').value) || 0;
-  const eff = document.getElementById('nhtEfficiency').value;
-  const nextTarget = document.getElementById('nhtResult').value;
+  calculateNextHourComparison();
+  const dayTarget = parseFloat(document.getElementById('nextDayTarget').value) || 0;
+  const cumulativeOutput = parseFloat(document.getElementById('cumulativeOutput').value) || 0;
+  const manpower = parseFloat(document.getElementById('manpower').value) || 0;
+  const smv = parseFloat(document.getElementById('smv').value) || 0;
+  const entryHourTargetVal = parseFloat(document.getElementById('entryHourTarget').value) || parseFloat(document.getElementById('hourlyTarget').value) || 0;
+  const entryHourActualVal = parseFloat(document.getElementById('entryHourActual').value) || 0;
+  const nextHourTargetStr = document.getElementById('nextHourTargetVal').value || '0';
+  const numericHourTarget = entryHourTargetVal > 0 ? entryHourTargetVal : (parseFloat(nextHourTargetStr) || 0);
 
   const newEntry = {
-    date: inputs.dateVal,
-    line: inputs.lineNo,
-    style: inputs.styleNo,
-    manpower: inputs.manpower,
-    smv: inputs.smv,
-    dayTarget: dayTarget,
-    actual: actual,
-    eff: eff,
-    nextTarget: nextTarget
+    date: document.getElementById('dateVal').value || new Date().toISOString().split('T')[0],
+    line: document.getElementById('lineNo').value.trim() || 'Line 1',
+    style: document.getElementById('styleNo').value.trim() || 'N/A',
+    manpower: manpower,
+    smv: smv,
+    hourTarget: numericHourTarget,
+    hourActual: entryHourActualVal,
+    target: dayTarget,
+    actual: cumulativeOutput
   };
 
   lineRecords.push(newEntry);
   syncToFirebase();
-  showToast(`Entry saved & synced to Firebase!`);
+  showToast(`Line Record saved & synced to Firebase!`);
 }
 
 function renderTableAndUI(){
   const tbody = document.getElementById('excelTableBody');
   tbody.innerHTML = '';
-  
   document.getElementById('recordBadge').innerText = `${lineRecords.length} entries`;
 
   if(lineRecords.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-slate-400">No records stored in Firebase. Upload an Excel file or save a line entry above.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="10" class="p-6 text-center text-slate-400">No records stored. Upload Excel or save line entry above.</td></tr>`;
   } else {
     lineRecords.forEach((r, idx) => {
+      const manpower = r.manpower || 0;
+      const smv = r.smv || 0;
+      const hourTarget = r.hourTarget !== undefined ? r.hourTarget : 0;
+      const hourActual = r.hourActual !== undefined ? r.hourActual : 0;
+      const eff = hourTarget > 0 ? (hourActual / hourTarget) * 100 : 0;
+      const variance = hourActual - hourTarget;
+
       const tr = document.createElement('tr');
       tr.className = 'hover:bg-sky-50/50 transition border-b border-slate-100';
       tr.innerHTML = `
         <td class="p-2.5 font-medium"><input type="date" value="${r.date}" class="bg-transparent text-xs w-28 rounded px-1 border border-transparent hover:border-slate-300 focus:border-sky-500" onchange="updateRecordField(${idx}, 'date', this.value)"></td>
         <td class="p-2.5 font-semibold text-slate-800"><input type="text" value="${r.line}" class="bg-transparent text-xs w-20 rounded px-1 border border-transparent hover:border-slate-300 focus:border-sky-500 font-semibold" onchange="updateRecordField(${idx}, 'line', this.value)"></td>
         <td class="p-2.5"><input type="text" value="${r.style}" class="bg-transparent text-xs w-24 rounded px-1 border border-transparent hover:border-slate-300 focus:border-sky-500" onchange="updateRecordField(${idx}, 'style', this.value)"></td>
-        <td class="p-2.5"><input type="number" value="${r.manpower || ''}" class="bg-transparent text-xs w-14 rounded px-1 border border-transparent hover:border-slate-300 focus:border-sky-500" onchange="updateRecordField(${idx}, 'manpower', parseFloat(this.value)||0)"></td>
-        <td class="p-2.5"><input type="number" step="0.1" value="${r.smv || ''}" class="bg-transparent text-xs w-14 rounded px-1 border border-transparent hover:border-slate-300 focus:border-sky-500" onchange="updateRecordField(${idx}, 'smv', parseFloat(this.value)||0)"></td>
-        <td class="p-2.5 font-bold text-sky-700"><input type="number" value="${r.dayTarget}" class="bg-transparent text-xs w-16 rounded px-1 border border-transparent hover:border-slate-300 focus:border-sky-500 font-bold text-sky-700" onchange="updateRecordField(${idx}, 'dayTarget', parseFloat(this.value)||0)"></td>
-        <td class="p-2.5 font-bold text-emerald-700"><input type="number" value="${r.actual}" class="bg-transparent text-xs w-16 rounded px-1 border border-transparent hover:border-slate-300 focus:border-sky-500 font-bold text-emerald-700" onchange="updateRecordField(${idx}, 'actual', parseFloat(this.value)||0)"></td>
-        <td class="p-2.5 font-bold text-purple-700">${r.eff}</td>
-        <td class="p-2.5 font-medium text-slate-700">${r.nextTarget}</td>
+        <td class="p-2.5 font-bold text-sky-700"><input type="number" value="${manpower}" class="bg-transparent text-xs w-16 rounded px-1 border border-sky-200 text-sky-700 font-bold" onchange="updateRecordField(${idx}, 'manpower', this.value)"></td>
+        <td class="p-2.5 font-bold text-slate-700"><input type="number" step="0.1" value="${smv}" class="bg-transparent text-xs w-16 rounded px-1 border border-slate-200 text-slate-700 font-bold" onchange="updateRecordField(${idx}, 'smv', this.value)"></td>
+        <td class="p-2.5 font-bold text-indigo-700"><input type="number" value="${hourTarget}" class="bg-transparent text-xs w-20 rounded px-1 border border-indigo-200 text-indigo-700 font-bold" onchange="updateRecordField(${idx}, 'hourTarget', this.value)"></td>
+        <td class="p-2.5 font-bold text-indigo-700"><input type="number" value="${hourActual}" class="bg-transparent text-xs w-20 rounded px-1 border border-indigo-200 text-indigo-700 font-bold" onchange="updateRecordField(${idx}, 'hourActual', this.value)"></td>
+        <td class="p-2.5 font-semibold ${variance >= 0 ? 'text-emerald-600' : 'text-red-600'}">${variance >= 0 ? '+' : ''}${variance}</td>
+        <td class="p-2.5 font-bold text-purple-700">${eff.toFixed(1)}%</td>
         <td class="p-2.5 text-center">
           <button onclick="deleteRecord(${idx})" class="text-red-500 hover:text-red-700 font-semibold text-xs px-2 py-1 rounded hover:bg-red-50 transition">Delete</button>
         </td>
@@ -972,21 +843,14 @@ function renderTableAndUI(){
 
 function updateRecordField(idx, field, value) {
   if (!lineRecords[idx]) return;
-  lineRecords[idx][field] = value;
-  
-  const r = lineRecords[idx];
-  if (r.manpower > 0 && r.smv > 0 && r.actual >= 0) {
-    const eff = (r.actual * r.smv) / (r.manpower * 60 * 8) * 100;
-    r.eff = eff.toFixed(1) + '%';
-  }
-  
+  lineRecords[idx][field] = (field === 'date' || field === 'line' || field === 'style') ? value : (parseFloat(value) || 0);
   syncToFirebase();
-  showToast(`Updated ${field} in Firebase`, 'info');
+  showToast(`Updated ${field}`, 'info');
 }
 
 function deleteRecord(idx){
   const item = lineRecords[idx];
-  showConfirm("Delete Entry", `Remove ${item ? item.line : 'record'} from database?`, () => {
+  showConfirm("Delete Record", `Remove ${item ? item.line : 'record'} from database?`, () => {
     lineRecords.splice(idx, 1);
     syncToFirebase();
     showToast("Record removed", "info");
@@ -1004,50 +868,61 @@ function clearAllRecordsConfirm(){
 
 function downloadExcelReport(){
   if(lineRecords.length === 0){
-    showToast("No data available to download into Excel.", "error");
+    showToast("No data available to download.", "error");
     return;
   }
-
   const excelData = lineRecords.map(r => ({
     "Date": r.date,
     "Line No.": r.line,
     "Style No.": r.style,
     "Manpower": r.manpower,
     "SMV (min)": r.smv,
-    "Day Target (Pcs)": r.dayTarget,
-    "Actual Output (Pcs)": r.actual,
-    "Actual Efficiency %": r.eff,
-    "Next Hour Target": r.nextTarget
+    "Hour Target": r.hourTarget || 0,
+    "Hour Actual": r.hourActual || 0,
+    "Total Target": r.target,
+    "Total Actual": r.actual,
+    "Variance (Pcs)": r.actual - r.target,
+    "Efficiency %": r.target > 0 ? Number(((r.actual / r.target) * 100).toFixed(1)) : 0
   }));
 
   const worksheet = XLSX.utils.json_to_sheet(excelData);
   const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Production Master Sheet");
-  
-  const fileName = `OMC_Production_Report_${new Date().toISOString().split('T')[0]}.xlsx`;
-  XLSX.writeFile(workbook, fileName);
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Target vs Actual Master");
+  XLSX.writeFile(workbook, `OMC_Target_vs_Actual_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
   showToast("Excel file generated!");
 }
 
 function downloadSampleTemplate(){
   const sample = [
-    { "Date": new Date().toISOString().split('T')[0], "Line No.": "Line 1", "Style No.": "STY-100", "Manpower": 12, "SMV (min)": 9.5, "Day Target (Pcs)": 600, "Actual Output (Pcs)": 550, "Actual Efficiency %": "91.6%", "Next Hour Target": "25" }
+    {
+      "Date": new Date().toISOString().split('T')[0],
+      "Line No.": "Line 1",
+      "Style No.": "STY-100",
+      "Manpower": 12,
+      "SMV (min)": 9.5,
+      "Hour Target": 75,
+      "Hour Actual": 70,
+      "Total Target": 600,
+      "Total Actual": 580
+    }
   ];
   const worksheet = XLSX.utils.json_to_sheet(sample);
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, "Template");
-  XLSX.writeFile(workbook, "OMC_Line_Data_Template.xlsx");
+  XLSX.writeFile(workbook, "OMC_Target_vs_Actual_Template.xlsx");
   showToast("Template downloaded!");
 }
 
-function triggerExcelUpload(){
-  document.getElementById('excelFileInput').click();
+function triggerExcelUpload() {
+  const fileInput = document.getElementById('excelFileInput');
+  if (fileInput) fileInput.click();
 }
 
-function handleExcelImport(e){
-  const file = e.target.files[0];
-  if(!file) return;
-  processExcelFile(file);
+function handleExcelImport(event) {
+  const file = event.target.files[0];
+  if (file) {
+    processExcelFile(file);
+  }
 }
 
 function processExcelFile(file) {
@@ -1056,8 +931,7 @@ function processExcelFile(file) {
     try {
       const data = new Uint8Array(evt.target.result);
       const workbook = XLSX.read(data, {type: 'array'});
-      const firstSheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[firstSheetName];
+      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
       const json = XLSX.utils.sheet_to_json(worksheet);
 
       if(json.length > 0){
@@ -1065,22 +939,21 @@ function processExcelFile(file) {
           date: row["Date"] || row["date"] || new Date().toISOString().split('T')[0],
           line: row["Line No."] || row["line"] || row["Line"] || "Line Unknown",
           style: row["Style No."] || row["style"] || row["Style"] || "N/A",
-          manpower: parseFloat(row["Manpower"] || row["manpower"] || 0),
-          smv: parseFloat(row["SMV (min)"] || row["smv"] || row["SMV"] || 0),
-          dayTarget: parseFloat(row["Day Target (Pcs)"] || row["dayTarget"] || row["Target"] || 0),
-          actual: parseFloat(row["Actual Output (Pcs)"] || row["actual"] || row["Actual"] || 0),
-          eff: row["Actual Efficiency %"] || row["eff"] || "0.0%",
-          nextTarget: row["Next Hour Target"] || row["nextTarget"] || "—"
+          manpower: parseFloat(row["Manpower"] || row["manpower"] || 10),
+          smv: parseFloat(row["SMV (min)"] || row["smv"] || 10),
+          hourTarget: parseFloat(row["Hour Target"] || row["hourTarget"] || 75),
+          hourActual: parseFloat(row["Hour Actual"] || row["hourActual"] || 70),
+          target: parseFloat(row["Total Target"] || row["Target"] || row["target"] || 600),
+          actual: parseFloat(row["Total Actual"] || row["Actual"] || row["actual"] || 550)
         }));
-
         lineRecords = importedRecords;
         syncToFirebase();
-        showToast(`Successfully imported ${importedRecords.length} records to Firebase!`);
+        showToast(`Successfully imported ${importedRecords.length} records!`);
       } else {
         showToast("Selected Excel file is empty.", "error");
       }
     } catch(err) {
-      showToast("Error reading Excel file. Ensure valid .xlsx / .csv format.", "error");
+      showToast("Error reading Excel file.", "error");
     }
   };
   reader.readAsArrayBuffer(file);
@@ -1088,40 +961,20 @@ function processExcelFile(file) {
 
 const excelPanel = document.getElementById('excelPanel');
 const dropHint = document.getElementById('dropZoneHint');
-
 if (excelPanel) {
   ['dragenter', 'dragover'].forEach(eventName => {
-    excelPanel.addEventListener(eventName, (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      excelPanel.classList.add('drag-over');
-      if (dropHint) dropHint.classList.remove('hidden');
-    }, false);
+    excelPanel.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); excelPanel.classList.add('drag-over'); if(dropHint) dropHint.classList.remove('hidden'); }, false);
   });
-
   ['dragleave', 'drop'].forEach(eventName => {
-    excelPanel.addEventListener(eventName, (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      excelPanel.classList.remove('drag-over');
-      if (dropHint) dropHint.classList.add('hidden');
-    }, false);
+    excelPanel.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); excelPanel.classList.remove('drag-over'); if(dropHint) dropHint.classList.add('hidden'); }, false);
   });
-
-  excelPanel.addEventListener('drop', (e) => {
-    const dt = e.dataTransfer;
-    const files = dt.files;
-    if(files.length > 0) {
-      processExcelFile(files[0]);
-    }
-  });
+  excelPanel.addEventListener('drop', (e) => { const files = e.dataTransfer.files; if(files.length > 0) processExcelFile(files[0]); });
 }
 
 function updateDateFilterOptions(){
   const filterSelect = document.getElementById('graphDateFilter');
   if (!filterSelect) return;
   const dates = [...new Set(lineRecords.map(r => r.date))];
-  
   const currentVal = filterSelect.value;
   filterSelect.innerHTML = '<option value="ALL">All Dates</option>';
   dates.forEach(d => {
@@ -1130,23 +983,16 @@ function updateDateFilterOptions(){
     opt.textContent = d;
     filterSelect.appendChild(opt);
   });
-
-  if(dates.includes(currentVal)){
-    filterSelect.value = currentVal;
-  }
+  if(dates.includes(currentVal)) filterSelect.value = currentVal;
 }
 
 function renderAllCharts(){
   const filterEl = document.getElementById('graphDateFilter');
   const selectedDate = filterEl ? filterEl.value : 'ALL';
+  const filteredData = selectedDate === 'ALL' ? lineRecords : lineRecords.filter(r => r.date === selectedDate);
 
-  const filteredData = selectedDate === 'ALL' 
-    ? lineRecords 
-    : lineRecords.filter(r => r.date === selectedDate);
-
-  let totalTarget = 0;
-  let totalOutput = 0;
-  let effSum = 0;
+  let totalHourTargetSum = 0;
+  let totalHourActualSum = 0;
   let atRiskCount = 0;
   let targetMetCount = 0;
   let minorRiskCount = 0;
@@ -1154,22 +1000,19 @@ function renderAllCharts(){
   const matrixBody = document.getElementById('problemMatrixBody');
   if (matrixBody) matrixBody.innerHTML = '';
 
-  if (filteredData.length === 0) {
-    if (matrixBody) {
-      matrixBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">No data available to display in Bottleneck Matrix.</td></tr>`;
-    }
+  if (filteredData.length === 0 && matrixBody) {
+    matrixBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">No data available.</td></tr>`;
   }
 
   filteredData.forEach(r => {
-    const dayTarget = r.dayTarget || 0;
-    const actual = r.actual || 0;
-    const variance = actual - dayTarget;
-    const achievePct = dayTarget > 0 ? (actual / dayTarget) * 100 : 0;
-    const effNum = parseFloat(r.eff) || 0;
+    const rHourTarget = r.hourTarget !== undefined ? r.hourTarget : 0;
+    const rHourActual = r.hourActual !== undefined ? r.hourActual : 0;
 
-    totalTarget += dayTarget;
-    totalOutput += actual;
-    effSum += effNum;
+    totalHourTargetSum += rHourTarget;
+    totalHourActualSum += rHourActual;
+
+    const achievePct = rHourTarget > 0 ? (rHourActual / rHourTarget) * 100 : 0;
+    const variance = rHourActual - rHourTarget;
 
     let statusBadge = '';
     let recommendation = '';
@@ -1177,15 +1020,15 @@ function renderAllCharts(){
     if (achievePct >= 100) {
       targetMetCount++;
       statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">🟢 Target Met</span>`;
-      recommendation = `Target met/exceeded (+${variance} pcs). Maintain rhythm & machine setup.`;
+      recommendation = `Hour target successfully met (+${variance} pcs).`;
     } else if (achievePct >= 85) {
       minorRiskCount++;
       statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-sky-100 text-sky-800">🔵 Minor Gap</span>`;
-      recommendation = `Slight shortfall (${variance} pcs). Monitor helper allocation and WIP flow.`;
+      recommendation = `Slight hourly shortfall (${variance} pcs). Review workflow.`;
     } else {
       atRiskCount++;
-      statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-800 animate-pulse">🔴 Critical Bottleneck</span>`;
-      recommendation = `Severe deficit (${variance} pcs, ${achievePct.toFixed(1)}%). Immediate supervisor action needed (check SMV/Breakdown).`;
+      statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-800 animate-pulse">🔴 Bottleneck</span>`;
+      recommendation = `Severe hourly deficit (${variance} pcs, ${achievePct.toFixed(1)}%). Supervisor intervention required.`;
     }
 
     if (matrixBody) {
@@ -1193,7 +1036,9 @@ function renderAllCharts(){
       tr.className = 'hover:bg-slate-50 transition';
       tr.innerHTML = `
         <td class="p-2.5 font-bold text-slate-800">${r.line} <span class="font-normal text-slate-500 text-[11px]">(${r.style})</span></td>
-        <td class="p-2.5">${dayTarget} / <strong class="text-slate-800">${actual}</strong> pcs</td>
+        <td class="p-2.5">
+          <div class="text-slate-600">Target: <strong class="text-indigo-700">${rHourTarget}</strong> / Actual: <strong class="text-emerald-700">${rHourActual}</strong> pcs</div>
+        </td>
         <td class="p-2.5 font-semibold ${variance >= 0 ? 'text-emerald-600' : 'text-red-600'}">${variance > 0 ? '+' : ''}${variance} pcs</td>
         <td class="p-2.5 font-bold text-slate-700">${achievePct.toFixed(1)}%</td>
         <td class="p-2.5">${statusBadge}</td>
@@ -1203,14 +1048,14 @@ function renderAllCharts(){
     }
   });
 
-  const overallAchievePct = totalTarget > 0 ? (totalOutput / totalTarget) * 100 : 0;
-  const overallVariance = totalOutput - totalTarget;
+  const overallAchievePct = totalHourTargetSum > 0 ? (totalHourActualSum / totalHourTargetSum) * 100 : 0;
+  const overallVariance = totalHourActualSum - totalHourTargetSum;
 
   const totalTargetEl = document.getElementById('metricTotalTarget');
-  if (totalTargetEl) totalTargetEl.innerText = totalTarget.toLocaleString();
+  if (totalTargetEl) totalTargetEl.innerText = totalHourTargetSum.toLocaleString();
 
   const totalOutputEl = document.getElementById('metricTotalOutput');
-  if (totalOutputEl) totalOutputEl.innerText = totalOutput.toLocaleString();
+  if (totalOutputEl) totalOutputEl.innerText = totalHourActualSum.toLocaleString();
   
   const achieveEl = document.getElementById('metricAchievementRate');
   if (achieveEl) achieveEl.innerText = overallAchievePct.toFixed(1) + '%';
@@ -1224,12 +1069,10 @@ function renderAllCharts(){
     varEl.innerText = `${overallVariance >= 0 ? '+' : ''}${overallVariance.toLocaleString()} Pcs`;
     varEl.className = `text-lg font-bold ${overallVariance >= 0 ? 'text-emerald-600' : 'text-red-600'}`;
   }
-  if (varLbl) {
-    varLbl.innerText = overallVariance >= 0 ? 'Ahead of Schedule' : 'Production Deficit';
-  }
+  if (varLbl) varLbl.innerText = overallVariance >= 0 ? 'Ahead of Hour Target' : 'Hour Target Deficit';
 
   const avgEffEl = document.getElementById('metricAvgEff');
-  if (avgEffEl) avgEffEl.innerText = filteredData.length > 0 ? (effSum / filteredData.length).toFixed(1) + '%' : '0%';
+  if (avgEffEl) avgEffEl.innerText = overallAchievePct.toFixed(1) + '%';
   
   const atRiskEl = document.getElementById('metricAtRiskCount');
   if (atRiskEl) {
@@ -1237,28 +1080,20 @@ function renderAllCharts(){
     atRiskEl.className = `text-lg font-bold ${atRiskCount > 0 ? 'text-red-600' : 'text-emerald-600'}`;
   }
 
-  const labels = filteredData.map(r => `${r.line} (${r.style})`);
+  const lineLabels = filteredData.map(r => `${r.line} (${r.style})`);
+  const hourTargetValues = filteredData.map(r => r.hourTarget || 0);
+  const hourActualValues = filteredData.map(r => r.hourActual || 0);
 
-  /* 1. BAR CHART */
   const barCanvas = document.getElementById('barChartCanvas');
   if (barCanvas) {
     if (barChartInstance) barChartInstance.destroy();
-    const targetData = filteredData.map(r => r.dayTarget || 0);
-    const actualData = filteredData.map(r => r.actual || 0);
-    const actualBarColors = filteredData.map(r => {
-      const achieve = r.dayTarget > 0 ? (r.actual / r.dayTarget) * 100 : 0;
-      if (achieve >= 100) return '#10B981';
-      if (achieve >= 85) return '#0EA5E9';
-      return '#EF4444';
-    });
-
     barChartInstance = new Chart(barCanvas.getContext('2d'), {
       type: 'bar',
       data: {
-        labels: labels,
+        labels: lineLabels,
         datasets: [
-          { label: 'Day Target (Pcs)', data: targetData, backgroundColor: '#38BDF8', borderRadius: 6, barPercentage: 0.7 },
-          { label: 'Actual Output (Pcs)', data: actualData, backgroundColor: actualBarColors, borderRadius: 6, barPercentage: 0.7 }
+          { label: 'Hour Target (Pcs)', data: hourTargetValues, backgroundColor: '#38BDF8', borderRadius: 4, barPercentage: 0.6 },
+          { label: 'Hour Actual Output (Pcs)', data: hourActualValues, backgroundColor: '#10B981', borderRadius: 4, barPercentage: 0.6 }
         ]
       },
       options: {
@@ -1270,66 +1105,50 @@ function renderAllCharts(){
     });
   }
 
-  /* 2. DONUT CHART */
   const donutCanvas = document.getElementById('donutChartCanvas');
   if (donutCanvas) {
     if (donutChartInstance) donutChartInstance.destroy();
     donutChartInstance = new Chart(donutCanvas.getContext('2d'), {
       type: 'doughnut',
       data: {
-        labels: ['Target Met (>=100%)', 'Minor Gap (85-99%)', 'Critical Bottleneck (<85%)'],
-        datasets: [{
-          data: [targetMetCount, minorRiskCount, atRiskCount],
-          backgroundColor: ['#10B981', '#0EA5E9', '#EF4444'],
-          hoverOffset: 6
-        }]
+        labels: ['Target Met (>=100%)', 'Minor Gap (85-99%)', 'Bottleneck (<85%)'],
+        datasets: [{ data: [targetMetCount, minorRiskCount, atRiskCount], backgroundColor: ['#10B981', '#0EA5E9', '#EF4444'], hoverOffset: 6 }]
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Space Grotesk', size: 10 } } } },
-        cutout: '65%'
-      }
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Space Grotesk', size: 10 } } } }, cutout: '65%' }
     });
   }
 
-  /* 3. PIE CHART */
   const pieCanvas = document.getElementById('pieChartCanvas');
   if (pieCanvas) {
     if (pieChartInstance) pieChartInstance.destroy();
     const pieColors = ['#0EA5E9', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#6366F1', '#14B8A6'];
-    const actualOutputs = filteredData.map(r => r.actual || 0);
+    
+    let lineActualsMap = {};
+    filteredData.forEach(r => {
+      lineActualsMap[r.line] = (lineActualsMap[r.line] || 0) + (r.hourActual || 0);
+    });
 
     pieChartInstance = new Chart(pieCanvas.getContext('2d'), {
       type: 'pie',
       data: {
-        labels: filteredData.map(r => r.line),
-        datasets: [{
-          data: actualOutputs,
-          backgroundColor: pieColors.slice(0, Math.max(1, filteredData.length)),
-          hoverOffset: 6
-        }]
+        labels: Object.keys(lineActualsMap),
+        datasets: [{ data: Object.values(lineActualsMap), backgroundColor: pieColors.slice(0, Math.max(1, Object.keys(lineActualsMap).length)), hoverOffset: 6 }]
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Space Grotesk', size: 10 } } } }
-      }
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Space Grotesk', size: 10 } } } } }
     });
   }
 
-  /* 4. EFFICIENCY CHART */
   const effCanvas = document.getElementById('efficiencyChartCanvas');
   if (effCanvas) {
     if (efficiencyChartInstance) efficiencyChartInstance.destroy();
-    const effValues = filteredData.map(r => parseFloat(r.eff) || 0);
-    const effColors = effValues.map(v => v >= 90 ? '#10B981' : (v >= 75 ? '#0EA5E9' : '#EF4444'));
+    const lineEffValues = filteredData.map(r => ((r.hourTarget || 0) > 0 ? ((r.hourActual || 0) / r.hourTarget) * 100 : 0));
+    const effColors = lineEffValues.map(v => v >= 90 ? '#10B981' : (v >= 75 ? '#0EA5E9' : '#EF4444'));
 
     efficiencyChartInstance = new Chart(effCanvas.getContext('2d'), {
       type: 'bar',
       data: {
-        labels: labels,
-        datasets: [{ label: 'Actual Efficiency %', data: effValues, backgroundColor: effColors, borderRadius: 6 }]
+        labels: lineLabels,
+        datasets: [{ label: 'Achievement %', data: lineEffValues, backgroundColor: effColors, borderRadius: 6 }]
       },
       options: {
         responsive: true,
@@ -1341,11 +1160,11 @@ function renderAllCharts(){
   }
 }
 
-// Expose functions globally for inline HTML event handlers
 window.toggleSuperuserLock = toggleSuperuserLock;
 window.unlockSuperuser = unlockSuperuser;
 window.autoSaveDraft = autoSaveDraft;
-window.syncTargetAndEfficiency = syncTargetAndEfficiency;
+window.calculateTargetValues = calculateTargetValues;
+window.calculateNextHourComparison = calculateNextHourComparison;
 window.saveCurrentLineData = saveCurrentLineData;
 window.updateRecordField = updateRecordField;
 window.deleteRecord = deleteRecord;
@@ -1355,26 +1174,18 @@ window.downloadSampleTemplate = downloadSampleTemplate;
 window.triggerExcelUpload = triggerExcelUpload;
 window.handleExcelImport = handleExcelImport;
 window.renderAllCharts = renderAllCharts;
-window.showToast = showToast;
-window.showConfirm = showConfirm;
 
 window.addEventListener('load', () => {
   const dateValInput = document.getElementById('dateVal');
   if (dateValInput && !dateValInput.value) {
     dateValInput.value = new Date().toISOString().split('T')[0];
   }
-
-  // Ensure password form submit handler is bound on load
   const formEl = document.getElementById('superuserForm');
   if (formEl) {
-    formEl.addEventListener('submit', (e) => {
-      e.preventDefault();
-      window.unlockSuperuser();
-    });
+    formEl.addEventListener('submit', (e) => { e.preventDefault(); window.unlockSuperuser(); });
   }
-
+  calculateTargetValues();
   renderTableAndUI();
-  syncTargetAndEfficiency();
 });
 </script>
 </body>
